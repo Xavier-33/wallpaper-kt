@@ -1,0 +1,27 @@
+# 1. 编译产物
+unpackage/
+
+# 2. 依赖包
+# 靠 DCloud 插件市场安装依赖的项目要提交 uni_modules
+
+# 3. HBuilderX 相关
+.hbuilderx/
+*.log
+
+# 4. 系统与编辑器缓存
+# Windows
+Thumbs.db
+Desktop.ini
+# Mac
+.DS_Store
+# Vim
+*.swp
+*.swo
+
+# 5. 本地环境配置（可选，含敏感信息时必加）
+.env.local
+.env.*.local
+
+# 6. 可选忽略（根据需求）
+# package-lock.json  # 若用 yarn 可忽略
+# simulator/         # 模拟器缓存
