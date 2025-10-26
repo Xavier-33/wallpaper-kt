@@ -5,8 +5,10 @@
 				<image @click="maskChange" src="/common/images/preview1.jpg" mode="aspectFill" class="img"></image>
 			</swiper-item>
 		</swiper>
-		<view class="mask" v-show="maskState" @click="maskChange">
-			<view class="go-back"></view>
+		<view class="mask" v-show="!maskState" @click="maskChange">
+			<view class="go-back" :style="{ top: getStatusBarHeight()+'px' }" @click="goBack">
+				<uni-icons type="back" color="#fff" size="20"></uni-icons>
+			</view>
 			<view class="count">5 / 9</view>
 			<view class="time">
 				<uni-dateformat :date="Date.now()" format="hh:mm"></uni-dateformat>
@@ -88,6 +90,7 @@
 
 <script setup>
 import { ref, onMounted } from 'vue';
+import { getStatusBarHeight } from '@/utils/system.js'
 
 const maskState = ref(false);  // 遮罩层状态
 const infoPopup = ref(null);
@@ -112,6 +115,12 @@ const clickInfo = () => {
 const maskChange = () => {
 	maskState.value = !maskState.value;
 }
+
+//返回上一页
+const goBack = () => {
+	uni.navigateBack();
+}
+
 </script>
 
 <style lang="scss" scoped>
@@ -143,9 +152,19 @@ const maskChange = () => {
 			color: #fff;
 			width: fit-content;
 		}
-		
 		.go-back {
-			
+			width: 38px;
+			height: 38px;
+			background: rgba(0, 0, 0, 0.5);
+			left: 30rpx;
+			margin-left: 0;
+			border-radius: 100px;
+			top: 0;
+			backdrop-filter: blur(10rpx);
+			border: 1rpx solid rgba(255, 255, 255, 0.3);
+			display: flex;
+			align-items: center;
+			justify-content: center;
 		}
 		.count {
 			top: 10vh;

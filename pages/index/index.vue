@@ -1,6 +1,6 @@
 <template>
 	<view class="layout page-bg">
-		<custom-nav-bar></custom-nav-bar>
+		<custom-nav-bar title="推荐"></custom-nav-bar>
 		<!-- 轮播图 -->
 		<view class="banner">
 			<swiper circular indicator-dots="true" indicator-color="rgba(255,255,255,0.5)"
@@ -18,7 +18,7 @@
 			</view>
 			<view class="center">
 				<swiper vertical autoplay interval="1500" duration="300" circular>
-					<swiper-item v-for="item in 4">消息内容消息内容消息内容消息内容
+					<swiper-item v-for="item in 4" @click="toDetail">消息内容消息内容消息内容消息内容
 					消息内容消息内容消息内容消息内容消息内容消息内容消息内容</swiper-item>
 				</swiper>
 			</view>
@@ -41,7 +41,7 @@
 			</common-title>
 			<view class="content">
 				<scroll-view scroll-x>
-					<view class="box" v-for="item in 8">
+					<view class="box" v-for="item in 8" @click="goPreview">
 						<image src="../../common/images/preview_small.webp" mode="aspectFill"></image>
 					</view>
 				</scroll-view>
@@ -64,7 +64,17 @@
 </template>
 
 <script setup>
+const goPreview = () => {
+	uni.navigateTo({
+		url: "/pages/preview/preview"
+	})
+}
 
+const toDetail = () => {
+	uni.navigateTo({
+		url: "/pages/notice/detail"
+	})
+}
 </script>
 
 <style lang="scss" scoped>

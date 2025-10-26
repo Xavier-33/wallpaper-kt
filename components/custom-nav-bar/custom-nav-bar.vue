@@ -1,10 +1,10 @@
 <template>
 	<view class="layout">
 		<view class="navbar">
-			<view class="status-bar" :style="{ height: getStatusBarHight()+'px' }"></view>
+			<view class="status-bar" :style="{ height: getStatusBarHeight()+'px' }"></view>
 			<view class="title-bar"
 			 :style="{ height: getTitleBarHeight()+'px', marginLeft: getLeftIconLeft()+'px' }">
-				<view><text class="title">标题</text></view>
+				<view><text class="title">{{title}}</text></view>
 				<view class="search">
 					<uni-icons class="search-icon" type="search" color="#888" size="18"></uni-icons>
 					<text class="search-text">搜索</text>
@@ -18,8 +18,14 @@
 
 <script setup>
 import { ref } from 'vue';
-import { getStatusBarHight, getTitleBarHeight, getNavBarHeight, getLeftIconLeft } from '@/utils/system.js'
+import { getStatusBarHeight, getTitleBarHeight, getNavBarHeight, getLeftIconLeft } from '@/utils/system.js'
 
+defineProps({
+	title: {
+			type: String,
+			defualt: "壁纸"
+	}
+})
 </script>
 
 <style lang="scss" scoped>
