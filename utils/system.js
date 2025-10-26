@@ -14,10 +14,12 @@ export const getTitleBarHeight = () => {
 export const getNavBarHeight = () => getStatusBarHight()+getTitleBarHeight();
 
 export const getLeftIconLeft = () => {
-	if (tt.getCustomButtonBoundingClentRect) {  // 抖音数据
-		let { leftIcon: { left, width } } = tt.getCustomButtonBoundingClentRect();
-		return left + parseInt(width) + 5;
-	} else {
-		return 0;
-	}
+	// #ifdef MP-TOUTIAO
+	let { leftIcon: { left, width } } = tt.getCustomButtonBoundingClentRect();
+	return left + parseInt(width) + 5;
+	// #endif
+	
+	// #ifndef MP-TOUTIAO
+	return 0
+	// #endif
 }
