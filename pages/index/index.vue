@@ -5,8 +5,8 @@
 		<view class="banner">
 			<swiper circular indicator-dots="true" indicator-color="rgba(255,255,255,0.5)"
 			indicator-active-color="#fff" autoplay>
-				<swiper-item v-for="item in 3">
-					<image src="../../common/images/banner1.jpg" mode="aspectFill"></image>
+				<swiper-item v-for="item in bannerList" :key="item._id">
+					<image :src="item.picurl" mode="aspectFill"></image>
 				</swiper-item>
 			</swiper>
 		</view>
@@ -18,8 +18,9 @@
 			</view>
 			<view class="center">
 				<swiper vertical autoplay interval="1500" duration="300" circular>
-					<swiper-item v-for="item in 4" @click="toDetail">消息内容消息内容消息内容消息内容
-					消息内容消息内容消息内容消息内容消息内容消息内容消息内容</swiper-item>
+					<swiper-item v-for="item in AnnouncementsList" :key="item._id" @click="toDetail">
+						<text>{{item.title}}</text>
+					</swiper-item>
 				</swiper>
 			</view>
 			<view class="right">
@@ -41,8 +42,8 @@
 			</common-title>
 			<view class="content">
 				<scroll-view scroll-x>
-					<view class="box" v-for="item in 8" @click="goPreview">
-						<image src="../../common/images/preview_small.webp" mode="aspectFill"></image>
+					<view class="box" v-for="item in dailySpecialList" :key="item._id" @click="goPreview">
+						<image :src="item.smallPicurl" mode="aspectFill"></image>
 					</view>
 				</scroll-view>
 			</view>
@@ -64,6 +65,51 @@
 </template>
 
 <script setup>
+import { ref } from 'vue';
+
+const bannerList = ref([]);
+const dailySpecialList = ref([]);
+const AnnouncementsList = ref([]);
+
+// 获取轮播图数据
+const getBanner = async () => {
+	let res = await uni.request({
+		url: "https://tea.qingnian8.com/api/bizhi/homeBanner",
+		header: {
+			"access-key": "xavier-wallpape"
+		}
+	})
+	if (res.data.errCode === 0) {
+		bannerList.value = res.data.data;
+	}
+}
+
+// 获取每日推荐
+const getDayRandom = async () => {
+	let res = await uni.request({
+		url: "https://tea.qingnian8.com/api/bizhi/randomWall",
+		header: {
+			"access-key": "xavier-wallpape"
+		}
+	})
+	if (res.data.errCode === 0) {
+		dailySpecialList.value = res.data.data;
+	}
+}
+
+// 获取公告栏数据
+const getNews = async () => {
+	let res = await uni.request({
+		url: "https://tea.qingnian8.com/api/bizhi/wallNewsList",
+		header: {
+			"access-key": "xavier-wallpape"
+		}
+	})
+	if (res.data.errCode === 0) {
+		AnnouncementsList.value = res.data.data;
+	}
+}
+
 const goPreview = () => {
 	uni.navigateTo({
 		url: "/pages/preview/preview"
@@ -75,6 +121,11 @@ const toDetail = () => {
 		url: "/pages/notice/detail"
 	})
 }
+
+// 发送请求
+getBanner(); 
+getDayRandom();
+getNews();
 </script>
 
 <style lang="scss" scoped>
