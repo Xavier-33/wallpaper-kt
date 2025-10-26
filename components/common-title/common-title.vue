@@ -1,0 +1,26 @@
+<template>
+	<view class="layout">
+		<view class="name">
+			<slot name="name">名称</slot>
+		</view>
+		<view class="custom">
+			<slot name="custom">more</slot>
+		</view>
+	</view>
+</template>
+
+<script setup>
+
+</script>
+
+<style lang="scss" scoped>
+.layout {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 0 30rpx;
+	.name {
+		font-size: 40rpx;
+	}
+}
+</style>
