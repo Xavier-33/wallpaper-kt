@@ -1,7 +1,0 @@
-{
-  "navigationBarTitleText": "我的",
-  "navigationStyle": "custom",
-  "usingComponents": {
-    "user-item": "../../components/user-item/user-item"
-  }
-}
