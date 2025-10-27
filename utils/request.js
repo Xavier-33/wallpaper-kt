@@ -2,14 +2,20 @@ const BASE_URL = "https://tea.qingnian8.com/api/bizhi";
 const ACCESS_KEY = "xavier-wallpape";
 
 export function request(config = {}) {
-	let { url, method='GET', header={} } = config;
+	let { 
+		url, 
+		method = 'GET', 
+		header = {}, 
+		data = {} 
+	} = config;
 	
 	url = BASE_URL + url;
-	header['access-key'] = "xavier-wallpape";
+	header['access-key'] = ACCESS_KEY;
 	
 	return new Promise((resolve, reject) => {
 		uni.request({
 			url,
+			data,
 			method,
 			header,
 			success: res => {
