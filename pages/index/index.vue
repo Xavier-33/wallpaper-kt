@@ -66,6 +66,7 @@
 
 <script setup>
 import { ref } from 'vue';
+import { apiGetBanner, apiGetDayRandom, apiGetNews } from '@/api/apis.js';
 
 const bannerList = ref([]);
 const dailySpecialList = ref([]);
@@ -73,41 +74,22 @@ const AnnouncementsList = ref([]);
 
 // 获取轮播图数据
 const getBanner = async () => {
-	let res = await uni.request({
-		url: "https://tea.qingnian8.com/api/bizhi/homeBanner",
-		header: {
-			"access-key": "xavier-wallpape"
-		}
-	})
-	if (res.data.errCode === 0) {
-		bannerList.value = res.data.data;
-	}
+	let res = await apiGetBanner();
+	bannerList.value = res.data.data;
+
 }
 
 // 获取每日推荐
 const getDayRandom = async () => {
-	let res = await uni.request({
-		url: "https://tea.qingnian8.com/api/bizhi/randomWall",
-		header: {
-			"access-key": "xavier-wallpape"
-		}
-	})
-	if (res.data.errCode === 0) {
-		dailySpecialList.value = res.data.data;
-	}
+	let res = await apiGetDayRandom();
+	dailySpecialList.value = res.data.data;
+
 }
 
 // 获取公告栏数据
 const getNews = async () => {
-	let res = await uni.request({
-		url: "https://tea.qingnian8.com/api/bizhi/wallNewsList",
-		header: {
-			"access-key": "xavier-wallpape"
-		}
-	})
-	if (res.data.errCode === 0) {
-		AnnouncementsList.value = res.data.data;
-	}
+	let res = await apiGetNews();
+	AnnouncementsList.value = res.data.data;
 }
 
 const goPreview = () => {
