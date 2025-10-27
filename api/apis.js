@@ -12,8 +12,9 @@ export function apiGetDayRandom() {
 	});
 }
 
-export function apiGetNews() {
+export function apiGetNews(data = {}) {
 	return request({
-		url: "/wallNewsList"
+		url: "/wallNewsList",
+		data
 	});
 }
