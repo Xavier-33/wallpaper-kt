@@ -64,6 +64,30 @@
 </template>
 
 <script setup>
+import { ref } from 'vue';
+
+const bannerList = ref([]);
+const dailySpecialList = ref([]);
+const AnnouncementsList = ref([]);
+
+// 获取轮播图数据
+const getBanner = async () => {
+	let res = await apiGetBanner();
+	bannerList.value = res.data;
+}
+
+// 获取每日推荐
+const getDayRandom = async () => {
+	let res = await apiGetDayRandom();
+	dailySpecialList.value = res.data;
+}
+
+// 获取公告栏数据
+const getNews = async () => {
+	let res = await apiGetNews();
+	AnnouncementsList.value = res.data;
+}
+
 const goPreview = () => {
 	uni.navigateTo({
 		url: "/pages/preview/preview"
