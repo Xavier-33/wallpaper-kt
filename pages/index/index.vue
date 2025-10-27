@@ -18,7 +18,7 @@
 			</view>
 			<view class="center">
 				<swiper vertical autoplay interval="1500" duration="300" circular>
-					<swiper-item v-for="item in AnnouncementsList" :key="item._id" @click="toDetail">
+					<swiper-item v-for="item in announcementsList" :key="item._id" @click="toDetail">
 						<text>{{item.title}}</text>
 					</swiper-item>
 				</swiper>
@@ -57,7 +57,9 @@
 				</template>
 			</common-title>
 			<view class="theme-content">
-				<theme-item v-for="item in 8"></theme-item>
+				<theme-item v-for="item in sepcialTopicSelection"
+				  :key="item._id" :item="item"
+				></theme-item>
 				<theme-item :isMore="true"></theme-item>
 			</view>
 		</view>
@@ -66,36 +68,44 @@
 
 <script setup>
 import { ref } from 'vue';
-import { apiGetBanner, apiGetDayRandom, apiGetNews } from '@/api/apis.js';
+import { apiGetBanner, apiGetDayRandom, apiGetNews, apiGetClassify } from '@/api/apis.js';
 
 const bannerList = ref([]);
 const dailySpecialList = ref([]);
-const AnnouncementsList = ref([]);
+const announcementsList = ref([]);
+const sepcialTopicSelection = ref([]);
 
 // 获取轮播图数据
 const getBanner = async () => {
 	let res = await apiGetBanner();
 	bannerList.value = res.data;
 }
-
 // 获取每日推荐
 const getDayRandom = async () => {
 	let res = await apiGetDayRandom();
 	dailySpecialList.value = res.data;
 }
-
 // 获取公告栏数据
 const getNews = async () => {
 	let res = await apiGetNews();
-	AnnouncementsList.value = res.data;
+	announcementsList.value = res.data;
+}
+// 获取专题精选数据
+const getClassify = async () => {
+	let res = await apiGetClassify({
+		select: true
+	});
+	// console.log(res);
+	sepcialTopicSelection.value = res.data;
 }
 
+// 跳转预览页
 const goPreview = () => {
 	uni.navigateTo({
 		url: "/pages/preview/preview"
 	})
 }
-
+// 跳转详情页
 const toDetail = () => {
 	uni.navigateTo({
 		url: "/pages/notice/detail"
@@ -106,6 +116,7 @@ const toDetail = () => {
 getBanner(); 
 getDayRandom();
 getNews();
+getClassify();
 </script>
 
 <style lang="scss" scoped>

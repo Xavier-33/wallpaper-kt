@@ -18,3 +18,10 @@ export function apiGetNews(data = {}) {
 		data
 	});
 }
+
+export function apiGetClassify(data = {}) {
+	return request({
+		url: "/classify",
+		data
+	});
+}
