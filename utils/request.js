@@ -1,5 +1,5 @@
 const BASE_URL = "https://tea.qingnian8.com/api/bizhi";
-const ACCESS_KEY = "xavier-wallpape";
+const ACCESS_KEY = "xavier";
 
 export function request(config = {}) {
 	let { 

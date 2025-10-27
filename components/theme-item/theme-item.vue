@@ -3,10 +3,10 @@
 		<navigator url="/pages/classlist/classlist" class="box" v-if="!isMore">
 			<image class="pic" :src="item.picurl" mode="aspectFill"></image>
 			<view class="mask">{{ item.name }}</view>
-			<view class="tab">3天前更新</view>
+			<view class="tab">{{ compareTimestamp(item.updateTime) }}前更新</view>
 		</navigator>
 		<navigator url="/pages/classify/classify" open-type="reLaunch" class="box more" v-if="isMore">
-			<image class="pic" src="" mode="aspectFill"></image>
+			<image class="pic" src="../../common/images/more.jpg" mode="aspectFill"></image>
 			<view class="mask">
 				<uni-icons type="more-filled" size="34" color="#fff"></uni-icons>
 				<view class="text">更多</view>
@@ -16,6 +16,8 @@
 </template>
 
 <script setup>
+import { compareTimestamp } from '@/utils/common.js';
+
 const props = defineProps({
 	isMore: {
 		type: Boolean,
@@ -32,7 +34,7 @@ const props = defineProps({
 		} 
 	}
 })
-// console.log(props.item);
+
 </script>
 
 <style lang="scss" scoped>

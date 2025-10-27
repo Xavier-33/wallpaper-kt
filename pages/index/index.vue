@@ -95,7 +95,6 @@ const getClassify = async () => {
 	let res = await apiGetClassify({
 		select: true
 	});
-	// console.log(res);
 	sepcialTopicSelection.value = res.data;
 }
 
