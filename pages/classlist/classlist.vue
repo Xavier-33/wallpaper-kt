@@ -1,5 +1,10 @@
 <template>
 	<view class="class-list">
+		<!-- 初次加载动画 -->
+		<view class="loading-layout" v-show="!classList.length && !noData">
+			<uni-load-more status="loading"></uni-load-more>
+		</view>
+		<!-- 内容区 -->
 		<view class="content">
 			<navigator
 			  url="/pages/preview/preview" class="item" 
@@ -8,6 +13,12 @@
 				<image :src="item.smallPicurl" mode="aspectFill" class="img"></image>
 			</navigator>
 		</view>
+		<!-- 触底加载动画 -->
+		<view class="loading-layout" v-show="classList.length || noData">
+			<uni-load-more :status="noData?'noMore':'loading'"></uni-load-more>
+		</view>
+		<!-- 小程序底部安全区 -->
+		<view class="safe-area-inset-bottom"></view>
 	</view>
 </template>
 
@@ -33,7 +44,6 @@ onLoad((e) => {
 	let { id=null, name=null } = e;
 	
 	queryParams.classid = id;
-	console.log(id, name);
 	// 修改导航栏标题
 	uni.setNavigationBarTitle({
 		title: name
