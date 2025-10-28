@@ -14,29 +14,53 @@
 <script setup>
 import { ref } from 'vue';
 import { apiGetWallList } from '@/api/apis.js';
-import { onLoad } from '@dcloudio/uni-app';
+import { onLoad, onReachBottom } from '@dcloudio/uni-app';
 
+// 分类列表数据
 const classList = ref([]);
-const queryParams = {};
+const noData = ref(false);
+
+// 定义 apiGetWallList 参数
+const queryParams = {
+	pageNum: 1,
+	pageSize: 12
+};
+// 触底更新防抖标识符
+let reachBottomTimer = null;
 
 onLoad((e) => {
+	console.log(e)
 	let { id=null, name=null } = e;
 	
 	queryParams.classid = id;
 	console.log(id, name);
+	// 修改导航栏标题
 	uni.setNavigationBarTitle({
 		title: name
 	})
 	
-	// setup 比 onLoad 快，要放 onLoad 中执行，不然 id 取不到值
-	getWallList(); 
-})
+	// 执行获取分类列表方法
+	getWallList(); // setup 比 onLoad 快，要放 onLoad 中执行，不然 id 取不到值
+});
+
+onReachBottom(() => {
+	if (noData.value) return;
+	if (reachBottomTimer) {
+		clearTimeout(reachBottomTimer);
+	}
+	reachBottomTimer = setTimeout(() => {
+		queryParams.pageNum++;
+		getWallList();
+		reachBottomTimer = null;
+	}, 100);
+});
 
 const getWallList = async () => {
 	let res = await apiGetWallList(queryParams);
-	classList.value = res.data;
-	console.log(res);
-}
+	classList.value = [...classList.value, ...res.data];
+	if (queryParams.pageSize > res.data.length) noData.value = true;
+	// console.log(classList.value);
+};
 
 
 </script>
