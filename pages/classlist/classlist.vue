@@ -64,11 +64,12 @@ onReachBottom(() => {
 		reachBottomTimer = null;
 	}, 100);
 });
-
+// 获取分类列表网格数据
 const getWallList = async () => {
 	let res = await apiGetWallList(queryParams);
 	classList.value = [...classList.value, ...res.data];
 	if (queryParams.pageSize > res.data.length) noData.value = true;
+	uni.setStorageSync("storeClassList", classList.value);
 	// console.log(classList.value);
 };
 

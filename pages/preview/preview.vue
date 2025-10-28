@@ -1,15 +1,17 @@
 <template>
 	<view class="preview">
+		<!-- 图片预览轮播图 -->
 		<swiper circular class="swiper">
-			<swiper-item v-for="item in 3" class="swiper-itme">
-				<image @click="maskChange" src="/common/images/preview1.jpg" mode="aspectFill" class="img"></image>
+			<swiper-item v-for="item in classList" :key="item._id" class="swiper-itme">
+				<image @click="maskChange" :src="item.picurl" mode="aspectFill" class="img"></image>
 			</swiper-item>
 		</swiper>
-		<view class="mask" v-show="!maskState" @click="maskChange">
+		<!-- 蒙层内容 -->
+		<view class="mask" v-show="!maskState">
 			<view class="go-back" :style="{ top: getStatusBarHeight()+'px' }" @click="goBack">
 				<uni-icons type="back" color="#fff" size="20"></uni-icons>
 			</view>
-			<view class="count">5 / 9</view>
+			<view class="count">3 / {{classList.length}}</view>
 			<view class="time">
 				<uni-dateformat :date="Date.now()" format="hh:mm"></uni-dateformat>
 			</view>
@@ -31,6 +33,7 @@
 				</view>
 			</view>
 		</view>
+		<!-- 蒙层"信息"触发底部弹层 -->
 		<view class="test">
 			<uni-popup ref="infoPopup" type="bottom">
 				<view class="infoPopup">
@@ -94,6 +97,7 @@ import { getStatusBarHeight } from '@/utils/system.js'
 
 const maskState = ref(false);  // 遮罩层状态
 const infoPopup = ref(null);
+const classList = ref([]);  // 网格数据
 
 // 点击关闭弹窗
 const clickInfoClose = () => {
@@ -121,6 +125,16 @@ const goBack = () => {
 	uni.navigateBack();
 }
 
+// 获取storage数据转预览图
+const storageClassList = uni.getStorageSync("storeClassList") || [];
+
+classList.value = storageClassList.map(item => {
+	return {
+		...item,
+		picurl: item.smallPicurl.replace("_small.webp", ".jpg")
+	}
+})
+console.log(classList.value);
 </script>
 
 <style lang="scss" scoped>
@@ -137,13 +151,6 @@ const goBack = () => {
 		}
 	}
 	.mask {
-		width: 100%;
-		height: 100vh;
-		// background: #fff;
-		// opacity: 0.1;
-		position: absolute;
-		top: 0;
-		left: 0;
 		&>view {
 			position: absolute;
 			left: 0;
