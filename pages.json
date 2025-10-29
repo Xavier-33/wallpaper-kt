@@ -51,6 +51,13 @@
 			{
 				"navigationBarTitleText" : "详细"
 			}
+		},
+		{
+			"path" : "pages/test/test",
+			"style" : 
+			{
+				"navigationBarTitleText" : "test"
+			}
 		}
 	],
 	"tabBar": {

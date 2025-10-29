@@ -91,24 +91,25 @@
 				<view class="scorePopup">
 					<view class="popHeader">
 						<view></view>  <!-- 为了布局平衡 -->
-						<view class="title">壁纸评分</view>
+						<view class="title">{{isScore ? '评分过了~' : '壁纸评分'}}</view>
 						<view class="close" @click="clickScoreClose">
 							<uni-icons type="closeempty" size="18" 
 							color="#999"></uni-icons>
 						</view>
 					</view>
 					<view class="content">
-						<uni-rate v-model="userScore" allowHalf="true"></uni-rate>
+						<uni-rate v-model="userScore" allowHalf="true" :disabled="isScore"></uni-rate>
 						<text class="text">{{userScore}}分</text>
 					</view>
 					<view class="footer">
 						<button 
 						  @click="submitScore" 
-							:disbale="!userScore" 
+							:disabled="!userScore || isScore" 
+							disabled-color="#FFCA3E"
 							type="default" 
 							size="mini" 
+							style="borderColor: #999999;"
 							plain
-							style="borderColor:#999999"
 						>确认评分</button>
 					</view>
 				</view>
@@ -132,6 +133,9 @@ const currentId = ref(null); // 页面跳转的参数
 const currentIndex = ref(0); // 图片的索引值
 const readedImgs = ref([]); // 预览时的已读图片
 const currentInfo = ref(null); // 获取当前图片的对象信息
+const isScore = ref(false);
+// 获取storage数据转预览图
+const storeClassList = uni.getStorageSync("storeClassList") || [];
 
 // 打开info弹窗
 const clickInfo = () => {
@@ -149,12 +153,17 @@ const clickInfoClose = () => {
 
 // 打开评分弹窗
 const clickScore = () => {
+	if (currentInfo.value.userScore) {
+		isScore.value = true;
+		userScore.value = currentInfo.value.userScore;
+	}
 	scorePopup.value?.open();
 }
 // 关闭评分弹窗
 const clickScoreClose = () => {
 	scorePopup.value?.close();
 	userScore.value = 0;
+	isScore.value = false;
 }
 
 // 遮罩层状态
@@ -163,17 +172,25 @@ const maskChange = () => {
 }
 // 确认提交评分
 const submitScore = async () => {
+	uni.showLoading({
+		title: "加载中..."
+	})
 	let { classid, _id:wallId } = currentInfo.value;
 	let res = await apiSetupScore({
 		classid,
 		wallId,
 		userScore: userScore.value
 	});
+	// 成功获取数据后隐藏提示
+	uni.hideLoading();
+	// 从 storage 中读取数据
 	if (res.errCode === 0) {
 		uni.showToast({
 			title: "评分成功",
 			icon: "none"
 		})
+		classList.value[currentIndex.value].userScore = userScore.value;
+		uni.setStorageSync("storeClassList", classList.value);
 		clickScoreClose();
 	}
 }
@@ -183,10 +200,8 @@ const goBack = () => {
 	uni.navigateBack();
 }
 
-// 获取storage数据转预览图
-const storageClassList = uni.getStorageSync("storeClassList") || [];
 // 取出缓存数据
-classList.value = storageClassList.map(item => {
+classList.value = storeClassList.map(item => {
 	return {
 		...item,
 		picurl: item.smallPicurl.replace("_small.webp", ".jpg")
