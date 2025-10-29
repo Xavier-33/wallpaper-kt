@@ -123,6 +123,7 @@ import { ref, onMounted } from 'vue';
 import { onLoad } from '@dcloudio/uni-app';
 import { getStatusBarHeight } from '@/utils/system.js'
 import { apiSetupScore } from '@/api/apis';
+import { fail } from 'assert';
 
 const maskState = ref(false);  // 遮罩层状态
 const infoPopup = ref(null);  // 信息弹层
@@ -240,13 +241,56 @@ const clickDownload = () => {
 	// #endif
 	
 	// #ifdef H5
+	uni.showLoading({
+		title: "下载中...",
+		mask: true
+	})
+	
 	uni.saveImageToPhotosAlbum({
 		filePath: currentInfo.value.picurl,
 		success: (res) => {
 			uni.saveImageToPhotosAlbum({
 				filePath: res.path,
-				success; (res) => {
+				success: (res) => {
 					console.log(res);
+				},
+				fail: (err) => {
+					// 取消授权的设置
+					if (err.errMsg === "saveImageToPhotosAlbum:fail cancel") {
+						uni.showToast({
+							title: "保存失败，请重新点击下载",
+							icon: "none"
+						})
+						return;
+					}
+					uni.showModal({
+						title: "授权提示",
+						content: "需要授权保存相册",
+						success: res => {
+							if (res.confirm) {
+								// console.log("确认授权");
+								uni.openSetting({
+									success: (setting) => {
+										console.log(setting);
+										if (setting.authSetting['scope.writePhotosAlbum']) {
+											uni.showToast({
+												title: "获取授权成功",
+												icon: "none"
+											})
+										} else {
+											uni.showToast({
+												title: "获取授权失败",
+												icon: "none"
+											})
+										}
+									}
+								})
+							}
+						}
+					})
+				},
+				complete: () => {
+					uni.hideLoading();
 				}
 			})
 		}
