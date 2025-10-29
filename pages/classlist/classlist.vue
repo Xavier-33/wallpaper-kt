@@ -7,8 +7,8 @@
 		<!-- 内容区 -->
 		<view class="content">
 			<navigator
-			  url="/pages/preview/preview" class="item" 
-				v-for="item in classList" :key="item._id"
+			  :url="'/pages/preview/preview?id='+item._id" class="item" 
+				v-for="(item, index) in classList" :key="item._id"
 			>
 				<image :src="item.smallPicurl" mode="aspectFill" class="img"></image>
 			</navigator>

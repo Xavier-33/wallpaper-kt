@@ -1,7 +1,7 @@
 <template>
 	<view class="preview">
 		<!-- 图片预览轮播图 -->
-		<swiper circular class="swiper">
+		<swiper circular class="swiper" :current="currentIndex" @change="swiperChange">
 			<swiper-item v-for="item in classList" :key="item._id" class="swiper-itme">
 				<image @click="maskChange" :src="item.picurl" mode="aspectFill" class="img"></image>
 			</swiper-item>
@@ -11,7 +11,7 @@
 			<view class="go-back" :style="{ top: getStatusBarHeight()+'px' }" @click="goBack">
 				<uni-icons type="back" color="#fff" size="20"></uni-icons>
 			</view>
-			<view class="count">3 / {{classList.length}}</view>
+			<view class="count">{{currentIndex+1}} / {{classList.length}}</view>
 			<view class="time">
 				<uni-dateformat :date="Date.now()" format="hh:mm"></uni-dateformat>
 			</view>
@@ -93,11 +93,14 @@
 
 <script setup>
 import { ref, onMounted } from 'vue';
+import { onLoad } from '@dcloudio/uni-app';
 import { getStatusBarHeight } from '@/utils/system.js'
 
 const maskState = ref(false);  // 遮罩层状态
 const infoPopup = ref(null);
 const classList = ref([]);  // 网格数据
+const currentId = ref(null); // 页面跳转的参数
+const currentIndex = ref(null); // 图片的索引值
 
 // 点击关闭弹窗
 const clickInfoClose = () => {
@@ -127,14 +130,25 @@ const goBack = () => {
 
 // 获取storage数据转预览图
 const storageClassList = uni.getStorageSync("storeClassList") || [];
-
+// 取出缓存数据
 classList.value = storageClassList.map(item => {
 	return {
 		...item,
 		picurl: item.smallPicurl.replace("_small.webp", ".jpg")
 	}
 })
-console.log(classList.value);
+// 页面跳转
+onLoad((e) => {
+	currentId.value = e.id; // 用id来找数组下标
+	currentIndex.value = classList.value.findIndex(item => item._id == currentId.value);
+})
+// 跟新预览图的索引值
+const swiperChange = (e) => {
+	console.log(e);
+	currentIndex.value = e.detail.current;
+}
+
+
 </script>
 
 <style lang="scss" scoped>
