@@ -6,7 +6,6 @@
 				<image v-if="readedImgs.includes(index)" @click="maskChange" :src="item.picurl" mode="aspectFill" class="img"></image>
 			</swiper-item>
 		</swiper>
-		{{readedImgs}}
 		<!-- 蒙层内容 -->
 		<view class="mask" v-show="!maskState">
 			<view class="go-back" :style="{ top: getStatusBarHeight()+'px' }" @click="goBack">
@@ -34,7 +33,7 @@
 				</view>
 			</view>
 		</view>
-		<!-- 蒙层"信息"触发底部弹层 -->
+		<!-- 底部弹层,由蒙层"信息"触发 -->
 		<view class="test">
 			<uni-popup ref="infoPopup" type="bottom">
 				<view class="infoPopup">
@@ -50,33 +49,31 @@
 						<view class="content">
 							<view class="row">
 								<text class="label">壁纸ID：</text>
-								<text selectable class="value">12312312ADFA</text>
+								<text selectable class="value">{{currentInfo._id}}</text>
 							</view>
-							<view class="row">
+<!-- 							<view class="row">
 								<text class="label">分类：</text>
 								<text class="value classify_">明星美女</text>
-							</view>
+							</view> -->
 							<view class="row">
 								<text class="label">发布者：</text>
-								<text class="value">咸虾米</text>
+								<text class="value">{{currentInfo.nickname}}</text>
 							</view>
 							<view class="row">
 								<text class="label">评分：</text>
 								<view class="value roteBox">
-									<uni-rate readonly touchable value="3" />
-									<text class="score">5分</text>
+									<uni-rate readonly touchable :value="currentInfo.score" />
+									<text class="score">{{currentInfo.score}}</text>
 								</view>
 							</view>
 							<view class="row">
 								<text class="label">摘要：</text>
-								<text class="value">NBA再次贡献世界名画，文班亚马封盖杜兰特名场面。图源：微博</text>
+								<text class="value">{{currentInfo.description}}</text>
 							</view>
 							<view class="row">
 								<text class="label">标签：</text>
-								<view class="tags">
-									<text class="tag">文班亚马</text> 
-									<text class="tag">杜兰特</text>
-									<text class="tag">球星</text>
+								<view class="tags" v-for="item in currentInfo.tabs" :key="item">
+									<text class="tag">{{item}}</text> 
 								</view>
 							</view>
 							<view class="copyright">
@@ -103,6 +100,7 @@ const classList = ref([]);  // 网格数据
 const currentId = ref(null); // 页面跳转的参数
 const currentIndex = ref(0); // 图片的索引值
 const readedImgs = ref([]); // 预览时的已读图片
+const currentInfo = ref(null); // 获取当前图片的对象信息
 
 // 点击关闭弹窗
 const clickInfoClose = () => {
@@ -152,11 +150,14 @@ function readImgsFun() {
 onLoad((e) => {
 	currentId.value = e.id; // 用id来找数组下标
 	currentIndex.value = classList.value.findIndex(item => item._id === currentId.value);
+	currentInfo.value = classList.value[currentIndex.value];
 	readImgsFun();
+	
 })
 // 跟新预览图的索引值
 const swiperChange = (e) => {
 	currentIndex.value = e.detail.current;
+	currentInfo.value = classList.value[currentIndex.value];
 	readImgsFun();
 }
 
