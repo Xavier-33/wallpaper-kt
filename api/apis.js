@@ -32,3 +32,10 @@ export function apiGetWallList(data = {}) {
 		data
 	})
 }
+// 为壁纸评分
+export function apiSetupScore(data = {}) {
+	return request({
+		url: "/setupScore",
+		data
+	})
+}

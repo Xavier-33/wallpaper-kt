@@ -25,7 +25,7 @@
 				</view>
 				<view class="box" @click="clickScore">
 					<uni-icons type="star" size="25"></uni-icons>
-					<view class="text">5分</view>
+					<view class="text">{{currentInfo.score}} 分</view>
 				</view>
 				<view class="box">
 					<uni-icons type="download" size="25"></uni-icons>
@@ -121,10 +121,11 @@
 import { ref, onMounted } from 'vue';
 import { onLoad } from '@dcloudio/uni-app';
 import { getStatusBarHeight } from '@/utils/system.js'
+import { apiSetupScore } from '@/api/apis';
 
 const maskState = ref(false);  // 遮罩层状态
-const infoPopup = ref(null);
-const scorePopup = ref(null);
+const infoPopup = ref(null);  // 信息弹层
+const scorePopup = ref(null);  // 评分弹层
 const userScore = ref(5);
 const classList = ref([]);  // 网格数据
 const currentId = ref(null); // 页面跳转的参数
@@ -142,25 +143,39 @@ const clickInfoClose = () => {
 }
 
 // 显示弹层 方便测试
-onMounted(() => {
-	scorePopup.value?.open();
-})
+// onMounted(() => {
+// 	scorePopup.value?.open();
+// })
 
 // 打开评分弹窗
 const clickScore = () => {
 	scorePopup.value?.open();
 }
 // 关闭评分弹窗
-const clickScoreClose=()=>{
+const clickScoreClose = () => {
 	scorePopup.value?.close();
+	userScore.value = 0;
 }
 
 // 遮罩层状态
 const maskChange = () => {
 	maskState.value = !maskState.value;
 }
-const submitScore = () => {
-	console.log(1);
+// 确认提交评分
+const submitScore = async () => {
+	let { classid, _id:wallId } = currentInfo.value;
+	let res = await apiSetupScore({
+		classid,
+		wallId,
+		userScore: userScore.value
+	});
+	if (res.errCode === 0) {
+		uni.showToast({
+			title: "评分成功",
+			icon: "none"
+		})
+		clickScoreClose();
+	}
 }
 
 //返回上一页
