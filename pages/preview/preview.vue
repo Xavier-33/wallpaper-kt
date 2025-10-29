@@ -27,7 +27,7 @@
 					<uni-icons type="star" size="25"></uni-icons>
 					<view class="text">{{currentInfo.score}} 分</view>
 				</view>
-				<view class="box">
+				<view class="box" @click="clickDownload">
 					<uni-icons type="download" size="25"></uni-icons>
 					<view class="text">下载</view>
 				</view>
@@ -230,7 +230,29 @@ const swiperChange = (e) => {
 	currentInfo.value = classList.value[currentIndex.value];
 	readImgsFun();
 }
-
+// 点击下载
+const clickDownload = () => {
+	// #ifdef H5
+	uni.showModal({
+		content: "请长按保存壁纸",
+		showCancel: false
+	})
+	// #endif
+	
+	// #ifdef H5
+	uni.saveImageToPhotosAlbum({
+		filePath: currentInfo.value.picurl,
+		success: (res) => {
+			uni.saveImageToPhotosAlbum({
+				filePath: res.path,
+				success; (res) => {
+					console.log(res);
+				}
+			})
+		}
+	})
+	// #endif
+}
 
 </script>
 
