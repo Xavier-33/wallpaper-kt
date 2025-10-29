@@ -19,11 +19,11 @@
 				<uni-dateformat :date="Date.now()" format="MM月dd日"></uni-dateformat>
 			</view>
 			<view class="footer">
-				<view class="box" @click.stop="clickInfo">
+				<view class="box" @click="clickInfo">
 					<uni-icons type="info" size="25"></uni-icons>
 					<view class="text">信息</view>
 				</view>
-				<view class="box">
+				<view class="box" @click="clickScore">
 					<uni-icons type="star" size="25"></uni-icons>
 					<view class="text">5分</view>
 				</view>
@@ -35,6 +35,7 @@
 		</view>
 		<!-- 底部弹层,由蒙层"信息"触发 -->
 		<view class="test">
+			<!-- 壁纸弹层信息 -->
 			<uni-popup ref="infoPopup" type="bottom">
 				<view class="infoPopup">
 					<view class="popHeader">
@@ -51,7 +52,7 @@
 								<text class="label">壁纸ID：</text>
 								<text selectable class="value">{{currentInfo._id}}</text>
 							</view>
-<!-- 							<view class="row">
+							<!-- <view class="row">
 								<text class="label">分类：</text>
 								<text class="value classify_">明星美女</text>
 							</view> -->
@@ -85,6 +86,33 @@
 					</scroll-view>
 				</view>
 			</uni-popup>
+			<!-- 评分弹层信息 -->
+			<uni-popup ref="scorePopup" :is-mask-click="false">
+				<view class="scorePopup">
+					<view class="popHeader">
+						<view></view>  <!-- 为了布局平衡 -->
+						<view class="title">壁纸评分</view>
+						<view class="close" @click="clickScoreClose">
+							<uni-icons type="closeempty" size="18" 
+							color="#999"></uni-icons>
+						</view>
+					</view>
+					<view class="content">
+						<uni-rate v-model="userScore" allowHalf="true"></uni-rate>
+						<text class="text">{{userScore}}分</text>
+					</view>
+					<view class="footer">
+						<button 
+						  @click="submitScore" 
+							:disbale="!userScore" 
+							type="default" 
+							size="mini" 
+							plain
+							style="borderColor:#999999"
+						>确认评分</button>
+					</view>
+				</view>
+			</uni-popup>
 		</view>
 	</view>
 </template>
@@ -96,31 +124,43 @@ import { getStatusBarHeight } from '@/utils/system.js'
 
 const maskState = ref(false);  // 遮罩层状态
 const infoPopup = ref(null);
+const scorePopup = ref(null);
+const userScore = ref(5);
 const classList = ref([]);  // 网格数据
 const currentId = ref(null); // 页面跳转的参数
 const currentIndex = ref(0); // 图片的索引值
 const readedImgs = ref([]); // 预览时的已读图片
 const currentInfo = ref(null); // 获取当前图片的对象信息
 
-// 点击关闭弹窗
+// 打开info弹窗
+const clickInfo = () => {
+	infoPopup.value?.open();
+}
+// 关闭info弹窗
 const clickInfoClose = () => {
 	infoPopup.value?.close();
 }
 
-// 测试显示弹窗
-// onMounted(() => {
-// 	console.log(infoPopup.value);
-//  infoPopup.value?.open();
-// });
+// 显示弹层 方便测试
+onMounted(() => {
+	scorePopup.value?.open();
+})
 
-// 点击显示弹窗
-const clickInfo = () => {
-	infoPopup.value?.open();
+// 打开评分弹窗
+const clickScore = () => {
+	scorePopup.value?.open();
+}
+// 关闭评分弹窗
+const clickScoreClose=()=>{
+	scorePopup.value?.close();
 }
 
-// 遮罩层点击事件
+// 遮罩层状态
 const maskChange = () => {
 	maskState.value = !maskState.value;
+}
+const submitScore = () => {
+	console.log(1);
 }
 
 //返回上一页
@@ -242,24 +282,26 @@ const swiperChange = (e) => {
 			}
 		}
 	}
+
+	.popHeader {  // 弹层的共有样式
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		.title {
+			color: $text-font-color-2;
+			font-size: 26rpx;
+			padding-left: 0rpx;
+		}
+		.close {
+			// border: 1px solid red;
+			padding: 6rpx;
+		}
+	}
 	.infoPopup {
 		background: #fff;
 		padding: 30rpx;
 		border-radius: 30rpx 30rpx 0 0;
 		overflow: hidden;
-		.popHeader {
-			display: flex;
-			justify-content: space-between;
-			align-items: center;
-			.title {
-				color: $text-font-color-2;
-				font-size: 26rpx;
-			}
-			.close {
-				// border: 1px solid red;
-				padding: 6rpx;
-			}
-		}
 		.scroll {
 			max-height: 60vh;
 			.content {
@@ -314,6 +356,31 @@ const swiperChange = (e) => {
 					line-height: 1.6rem;
 				}
 			}
+		}
+	}
+	.scorePopup {
+		background: #fff;
+		border-radius: 20rpx;
+		width: 70vw;
+		padding: 30rpx;
+		.content {
+			padding: 30rpx 0;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			.text {
+				padding-left: 20rpx;
+				color: #FFCA3E;
+				width: 80rpx;
+				// line-height: 1em;
+				text-align: right;
+			}
+		}
+		.footer {
+			padding: 10rpx 0;
+			display: flex;
+			align-items: center;
+			justify-content: center;
 		}
 	}
 }
