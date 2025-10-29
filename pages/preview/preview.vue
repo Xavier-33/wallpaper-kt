@@ -2,10 +2,11 @@
 	<view class="preview">
 		<!-- 图片预览轮播图 -->
 		<swiper circular class="swiper" :current="currentIndex" @change="swiperChange">
-			<swiper-item v-for="item in classList" :key="item._id" class="swiper-itme">
-				<image @click="maskChange" :src="item.picurl" mode="aspectFill" class="img"></image>
+			<swiper-item v-for="(item, index) in classList" :key="item._id" class="swiper-itme">
+				<image v-if="readedImgs.includes(index)" @click="maskChange" :src="item.picurl" mode="aspectFill" class="img"></image>
 			</swiper-item>
 		</swiper>
+		{{readedImgs}}
 		<!-- 蒙层内容 -->
 		<view class="mask" v-show="!maskState">
 			<view class="go-back" :style="{ top: getStatusBarHeight()+'px' }" @click="goBack">
@@ -100,7 +101,8 @@ const maskState = ref(false);  // 遮罩层状态
 const infoPopup = ref(null);
 const classList = ref([]);  // 网格数据
 const currentId = ref(null); // 页面跳转的参数
-const currentIndex = ref(null); // 图片的索引值
+const currentIndex = ref(0); // 图片的索引值
+const readedImgs = ref([]); // 预览时的已读图片
 
 // 点击关闭弹窗
 const clickInfoClose = () => {
@@ -137,15 +139,25 @@ classList.value = storageClassList.map(item => {
 		picurl: item.smallPicurl.replace("_small.webp", ".jpg")
 	}
 })
+// 辅助函数
+function readImgsFun() {
+	readedImgs.value.push(
+		currentIndex.value <= 0 ? classList.value.length-1 : currentIndex.value-1, 
+		currentIndex.value,
+		currentIndex.value >= classList.value.length-1 ? 0 : currentIndex.value+1
+	);
+	readedImgs.value = [...new Set(readedImgs.value)];
+}
 // 页面跳转
 onLoad((e) => {
 	currentId.value = e.id; // 用id来找数组下标
-	currentIndex.value = classList.value.findIndex(item => item._id == currentId.value);
+	currentIndex.value = classList.value.findIndex(item => item._id === currentId.value);
+	readImgsFun();
 })
 // 跟新预览图的索引值
 const swiperChange = (e) => {
-	console.log(e);
 	currentIndex.value = e.detail.current;
+	readImgsFun();
 }
 
 
